@@ -1,0 +1,11 @@
+<RCC>
+    <qresource prefix="/">
+        <file>res/if_circle-add_226591.png</file>
+        <file>res/if_circle-del_226591.png</file>
+        <file>res/if_folder-open_1608888.png</file>
+        <file>res/if_icon-help_211675.png</file>
+        <file>res/if_pencil5_216687.png</file>
+        <file>res/if_save_326688.png</file>
+        <file>res/iconfinder_backspace_216104.png</file>
+    </qresource>
+</RCC>
