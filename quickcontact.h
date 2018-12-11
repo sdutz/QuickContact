@@ -1,34 +1,60 @@
 #pragma once
 
+//----------------------------------------------------------
 #include <QDialog>
 #include <QSettings>
+#include <QCloseEvent>
 
+//----------------------------------------------------------
+class QListWidgetItem ;
+
+//----------------------------------------------------------
 namespace Ui {
-class QuickContact;
+    class QuickContact;
 }
 
+//----------------------------------------------------------
 class QuickContact : public QDialog
 {
     Q_OBJECT
 
     public:
-        explicit QuickContact(QWidget *parent = nullptr);
-        ~QuickContact();
+        explicit QuickContact( QWidget *parent = nullptr) ;
+        ~QuickContact() ;
+
+    protected:
+        void setChildrenFont() ;
+        void loadMap() ;
+        void showMap() ;
+        void setModified( bool bModified) ;
+        void setTitle() ;
+        void doEdit( int nRow) ;
 
     private slots:
-        void on_contacts_clicked(const QModelIndex &index);
-        void on_filter_textChanged(const QString &arg1);
-        void on_btnAdd_clicked();
-        void on_btnEdit_clicked();
-        void on_btnDelete_clicked();
-        void on_btnSave_clicked();
-        void on_btnAbout_clicked();
-        void on_contacts_doubleClicked(const QModelIndex &index);
-        void on_pushButton_clicked();
-        void on_btnImp_clicked();
+        void on_contacts_clicked( const QModelIndex &index) ;
+        void on_filter_textChanged( const QString &arg1) ;
+        void on_btnAdd_clicked() ;
+        void on_btnEdit_clicked() ;
+        void on_btnDelete_clicked() ;
+        void on_btnSave_clicked() ;
+        void on_btnAbout_clicked() ;
+        void on_contacts_doubleClicked( const QModelIndex &index) ;
+        void on_btnImp_clicked() ;
+        void on_btnReset_clicked() ;
+        void closeEvent( QCloseEvent* pEvent) ;
+        void on_contacts_currentRowChanged( int currentRow);
+        void on_btnNext_clicked();
 
     private:
-        Ui::QuickContact *ui;
-        QSettings        m_Set ;
-
-};
+        bool              m_bMod ;
+        int               m_nCurr ;
+        QString           m_szKey ;
+        QString           m_szTitle ;
+        QString           m_szNumSep ;
+        QString           m_szContSep ;
+        QSettings         m_set ;
+        QMap<QString,int> m_map ;
+        QMap<QString, int>::iterator m_iter ;
+        QList<QListWidgetItem*> m_found ;
+        Ui::QuickContact  *ui ;
+} ;
