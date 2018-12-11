@@ -25,6 +25,10 @@
   <property name="windowTitle">
    <string>Contact</string>
   </property>
+  <property name="windowIcon">
+   <iconset resource="res.qrc">
+    <normaloff>:/res/iconfinder_ic_contact_phone_48px_3669371.png</normaloff>:/res/iconfinder_ic_contact_phone_48px_3669371.png</iconset>
+  </property>
   <widget class="QLineEdit" name="filter">
    <property name="geometry">
     <rect>
