@@ -26,13 +26,16 @@ CONFIG += c++11
 
 SOURCES += \
         main.cpp \
-        quickcontact.cpp
+        quickcontact.cpp \
+    about.cpp
 
 HEADERS += \
-        quickcontact.h
+        quickcontact.h \
+    about.h
 
 FORMS += \
-        quickcontact.ui
+        quickcontact.ui \
+    about.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

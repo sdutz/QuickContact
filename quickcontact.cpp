@@ -2,6 +2,9 @@
 #include "ui_quickcontact.h"
 #include <QMessageBox>
 #include <QInputDialog>
+#include <QFileDialog>
+#include <QTextStream>
+#include "about.h"
 
 //----------------------------------------------------------
 QuickContact::QuickContact( QWidget *parent) : QDialog( parent), ui( new Ui::QuickContact)
@@ -169,7 +172,11 @@ QuickContact::on_btnSave_clicked()
 void
 QuickContact::on_btnAbout_clicked()
 {
+    about a ;
 
+    a.setWindowTitle( m_szTitle) ;
+
+    a.exec() ;
 }
 
 //----------------------------------------------------------
@@ -183,7 +190,36 @@ QuickContact::on_contacts_doubleClicked( const QModelIndex &index)
 void
 QuickContact::on_btnImp_clicked()
 {
+    QString szFile = QFileDialog::getOpenFileName( this, tr( "Select contacts file"), "", "*.txt") ;
 
+    if ( szFile.isEmpty()) {
+        return ;
+    }
+
+    QFile file( szFile) ;
+    if ( ! file.open( QIODevice::ReadOnly | QIODevice::Text)) {
+        return ;
+    }
+
+    QStringList slTokens ;
+    QTextStream stream( &file) ;
+    int nOldSize = m_map.count() ;
+
+    while( ! stream.atEnd()) {
+        slTokens = stream.readLine().split( m_szNumSep) ;
+        if ( slTokens.size() < 2) {
+            continue ;
+        }
+        m_map.insert( slTokens.first(), slTokens.last().toInt()) ;
+    }
+
+    file.close() ;
+
+    if ( m_map.count() != nOldSize) {
+        showMap() ;
+        setModified( true) ;
+        setTitle() ;
+    }
 }
 
 //----------------------------------------------------------
