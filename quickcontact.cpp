@@ -71,12 +71,12 @@ QuickContact::on_filter_textChanged( const QString &arg1)
 void
 QuickContact::on_btnAdd_clicked()
 {
-    QString szContact = QInputDialog::getText( this, m_szTitle, "Insert contact") ;
+    QString szContact = QInputDialog::getText( this, m_szTitle, tr( "Insert contact")) ;
     if( szContact.isEmpty()) {
         return ;
     }
 
-    int nNum = QInputDialog::getInt( this, m_szTitle, "Insert number") ;
+    int nNum = QInputDialog::getInt( this, m_szTitle, tr( "Insert number")) ;
     if ( nNum == 0) {
         return ;
     }
@@ -110,13 +110,13 @@ QuickContact::doEdit( int nRow)
     QString szOld = pCurr->text() ;
     int nOld = m_map.value( szOld) ;
 
-    QString szNew = QInputDialog::getText( this, m_szTitle, "Insert contact",
+    QString szNew = QInputDialog::getText( this, m_szTitle, tr( "Modify contact"),
                                            QLineEdit::Normal, szOld) ;
     if ( szNew.isEmpty()) {
         return ;
     }
 
-    int nNew = QInputDialog::getInt( this, m_szTitle, "Insert number", nOld) ;
+    int nNew = QInputDialog::getInt( this, m_szTitle, tr( "Modify number"), nOld) ;
     if ( nNew == 0) {
         return ;
     }
