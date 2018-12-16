@@ -27,15 +27,15 @@ CONFIG += c++11
 SOURCES += \
         main.cpp \
         quickcontact.cpp \
-    about.cpp
+        about.cpp
 
 HEADERS += \
         quickcontact.h \
-    about.h
+        about.h
 
 FORMS += \
         quickcontact.ui \
-    about.ui
+        about.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
@@ -44,3 +44,5 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 
 RESOURCES += \
     res.qrc
+
+win32:RC_ICONS += contact.ico
