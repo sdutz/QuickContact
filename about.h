@@ -1,22 +1,28 @@
-#ifndef ABOUT_H
-#define ABOUT_H
+#pragma once
 
+//----------------------------------------------------------
 #include <QDialog>
 
+//----------------------------------------------------------
 namespace Ui {
-class about;
+    class about ;
 }
 
+//----------------------------------------------------------
 class about : public QDialog
 {
     Q_OBJECT
 
-public:
-    explicit about(QWidget *parent = nullptr);
-    ~about();
+    public:
+        explicit about( QWidget *parent = nullptr);
+        ~about() ;
 
-private:
-    Ui::about *ui;
-};
+    private slots :
+        void mousePressEvent( QMouseEvent* pEvent) ;
 
-#endif // ABOUT_H
+    private:
+        Ui::about              *ui ;
+        QString                m_szText ;
+        QVector<Qt::Alignment> m_nAlign ;
+} ;
+
