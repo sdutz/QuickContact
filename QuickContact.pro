@@ -46,3 +46,4 @@ RESOURCES += \
     res.qrc
 
 win32:RC_ICONS += contact.ico
+VERSION = 2.0
