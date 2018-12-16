@@ -13,12 +13,13 @@ QuickContact::QuickContact( QWidget *parent) : QDialog( parent), ui( new Ui::Qui
     m_nCurr = 0 ;
     m_bMod  = false ;
     m_szKey = "contacts" ;
+    m_szLast = "last" ;
     m_szNumSep  = ":" ;
     m_szContSep = "," ;
     m_szTitle   = "Contacts" ;
     setChildrenFont() ;
     loadMap() ;
-    showMap() ;
+    showMap( true) ;
     setTitle() ;
     ui->btnSave->setEnabled( false) ;
     ui->btnNext->setEnabled( false) ;
@@ -232,12 +233,17 @@ void QuickContact::on_btnReset_clicked()
 
 //----------------------------------------------------------
 void
-QuickContact::showMap()
+QuickContact::showMap( bool bInit /*= false*/)
 {
     int         nIdx ;
+    QString     szCurr ;
     QStringList lszKeys ;
 
     ui->contacts->clear() ;
+
+    if ( bInit) {
+        szCurr = m_set.value( m_szLast, "").toString() ;
+    }
 
     lszKeys = m_map.keys() ;
     for ( nIdx = 0 ;  nIdx < lszKeys.count() ;  nIdx ++) {
@@ -245,7 +251,16 @@ QuickContact::showMap()
     }
 
     if ( m_map.count() > 0) {
-        ui->contacts->setCurrentRow( 0) ;
+        if ( szCurr.isEmpty()) {
+            ui->contacts->setCurrentRow( 0) ;
+        }
+        else {
+            m_found = ui->contacts->findItems( szCurr, Qt::MatchExactly) ;
+            if ( m_found.count() == 1) {
+                ui->contacts->setFocus() ;
+                ui->contacts->setCurrentRow( ui->contacts->row( m_found.first())) ;
+            }
+        }
     }
 }
 
@@ -284,6 +299,7 @@ QuickContact::closeEvent( QCloseEvent* pEvent)
     }
 
     if ( ! m_bMod) {
+        on_QuickContact_accepted() ;
         pEvent->accept();
     }
     else {
@@ -294,10 +310,12 @@ QuickContact::closeEvent( QCloseEvent* pEvent)
                 pEvent->ignore() ;
             break ;
             case QMessageBox::Yes :
+                on_QuickContact_accepted() ;
                 on_btnSave_clicked() ;
                 pEvent->accept() ;
             break ;
             case QMessageBox::No :
+                on_QuickContact_accepted() ;
                 pEvent->accept() ;
             break ;
         }
@@ -336,4 +354,29 @@ QuickContact::on_btnNext_clicked()
 {
     m_nCurr = ( m_nCurr == m_found.count() - 1) ? 0 : m_nCurr + 1 ;
     ui->contacts->setCurrentItem( m_found.at( m_nCurr)) ;
+}
+
+//----------------------------------------------------------
+void
+QuickContact::keyPressEvent( QKeyEvent* pEvent)
+{
+    if ( pEvent == nullptr) {
+        return ;
+    }
+
+    if ( pEvent->key() == Qt::Key_Escape  &&
+         QMessageBox::question( this, tr( "Exit"), tr( "Do you really want to exit?"),
+                                QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes) {
+        accept() ;
+    }
+}
+
+//----------------------------------------------------------
+void
+QuickContact::on_QuickContact_accepted()
+{
+    QListWidgetItem* pItem = ui->contacts->currentItem() ;
+    if ( pItem != nullptr) {
+        m_set.setValue( m_szLast, pItem->text()) ;
+    }
 }

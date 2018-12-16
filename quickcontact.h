@@ -25,12 +25,13 @@ class QuickContact : public QDialog
     protected:
         void setChildrenFont() ;
         void loadMap() ;
-        void showMap() ;
+        void showMap( bool bInit = false) ;
         void setModified( bool bModified) ;
         void setTitle() ;
         void doEdit( int nRow) ;
 
     private slots:
+        void keyPressEvent( QKeyEvent* pEvent) ;
         void on_contacts_clicked( const QModelIndex &index) ;
         void on_filter_textChanged( const QString &arg1) ;
         void on_btnAdd_clicked() ;
@@ -44,14 +45,16 @@ class QuickContact : public QDialog
         void closeEvent( QCloseEvent* pEvent) ;
         void on_contacts_currentRowChanged( int currentRow);
         void on_btnNext_clicked();
+        void on_QuickContact_accepted();
 
-    private:
+private:
         bool              m_bMod ;
         int               m_nCurr ;
         QString           m_szKey ;
         QString           m_szTitle ;
         QString           m_szNumSep ;
         QString           m_szContSep ;
+        QString           m_szLast ;
         QSettings         m_set ;
         QMap<QString,int> m_map ;
         QMap<QString, int>::iterator m_iter ;
