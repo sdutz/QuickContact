@@ -46,6 +46,7 @@ class QuickContact : public QDialog
         void on_contacts_currentRowChanged( int currentRow);
         void on_btnNext_clicked();
         void on_QuickContact_accepted();
+        void mouseDoubleClickEvent( QMouseEvent* pEvent) ;
 
 private:
         bool              m_bMod ;

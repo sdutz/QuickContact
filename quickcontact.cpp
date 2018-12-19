@@ -54,8 +54,18 @@ QuickContact::on_filter_textChanged( const QString &arg1)
     else {
         ui->btnReset->setEnabled( true) ;
     }
-
-    m_found = ui->contacts->findItems( arg1, Qt::MatchContains) ;
+    m_found.clear() ;
+    bool bOk ;
+    int num = arg1.toInt( &bOk) ;
+    if ( bOk) {
+        QString res = m_map.key( num) ;
+        if ( ! res.isEmpty()) {
+            m_found = ui->contacts->findItems( res, Qt::MatchExactly) ;
+        }
+    }
+    else {
+        m_found = ui->contacts->findItems( arg1, Qt::MatchContains) ;
+    }
 
     if ( ! m_found.isEmpty()) {
         m_nCurr = 0 ;
@@ -378,5 +388,18 @@ QuickContact::on_QuickContact_accepted()
     QListWidgetItem* pItem = ui->contacts->currentItem() ;
     if ( pItem != nullptr) {
         m_set.setValue( m_szLast, pItem->text()) ;
+    }
+}
+
+//----------------------------------------------------------
+void
+QuickContact::mouseDoubleClickEvent( QMouseEvent* pEvent)
+{
+    if ( pEvent == nullptr) {
+        return ;
+    }
+
+    if ( ui->number->window()->rect().contains( pEvent->pos())) {
+        ui->contacts->scrollToItem( ui->contacts->currentItem()) ;
     }
 }
