@@ -399,7 +399,12 @@ QuickContact::mouseDoubleClickEvent( QMouseEvent* pEvent)
         return ;
     }
 
-    if ( ui->number->window()->rect().contains( pEvent->pos())) {
-        ui->contacts->scrollToItem( ui->contacts->currentItem()) ;
+    QRect rect = ui->number->rect() ;
+    rect.moveTo( ui->number->pos()) ;
+
+    QListWidgetItem* pItem = ui->contacts->currentItem() ;
+
+    if ( pItem != nullptr  &&  rect.contains( pEvent->pos())) {
+        ui->contacts->scrollToItem( pItem) ;
     }
 }
