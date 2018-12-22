@@ -22,7 +22,6 @@ QuickContact::QuickContact( QWidget *parent) : QDialog( parent), ui( new Ui::Qui
     showMap( true) ;
     setTitle() ;
     ui->btnSave->setEnabled( false) ;
-    ui->btnNext->setEnabled( false) ;
     ui->btnReset->setEnabled( false) ;
     ui->filter->setFocus() ;
 }
@@ -62,9 +61,7 @@ void
 QuickContact::on_filter_textChanged( const QString &arg1)
 {
     if ( arg1.isEmpty()) {
-        ui->btnNext->setEnabled( false) ;
-        ui->btnReset->setEnabled( false) ;
-        showAll() ;
+        on_btnReset_clicked() ;
         return ;
     }
     else {
@@ -87,6 +84,7 @@ QuickContact::on_filter_textChanged( const QString &arg1)
         m_nCurr = 0 ;
         ui->contacts->setCurrentItem( m_found.first()) ;
         ui->btnNext->setEnabled( true) ;
+        ui->btnPrev->setEnabled( true) ;
     }
     else {
         ui->btnNext->setEnabled( false) ;
@@ -262,8 +260,8 @@ QuickContact::on_btnImp_clicked()
 void QuickContact::on_btnReset_clicked()
 {
     ui->filter->clear() ;
-    ui->btnNext->setEnabled( false) ;
     ui->btnReset->setEnabled( false) ;
+    m_found.clear() ;
     showAll() ;
 }
 
@@ -295,6 +293,7 @@ QuickContact::showMap( bool bInit /*= false*/)
             if ( m_found.count() == 1) {
                 ui->contacts->setFocus() ;
                 ui->contacts->setCurrentRow( ui->contacts->row( m_found.first())) ;
+                m_found.clear() ;
             }
         }
     }
@@ -390,8 +389,14 @@ QuickContact::setTitle()
 void
 QuickContact::on_btnNext_clicked()
 {
-    m_nCurr = ( m_nCurr == m_found.count() - 1) ? 0 : m_nCurr + 1 ;
-    ui->contacts->setCurrentItem( m_found.at( m_nCurr)) ;
+    if ( m_found.isEmpty()) {
+        int nCurr = ui->contacts->currentRow() ;
+        ui->contacts->setCurrentRow( nCurr == ui->contacts->count() - 1 ? 0 : nCurr + 1) ;
+    }
+    else {
+        m_nCurr = ( m_nCurr == m_found.count() - 1) ? 0 : m_nCurr + 1 ;
+        ui->contacts->setCurrentItem( m_found.at( m_nCurr)) ;
+    }
 }
 
 //----------------------------------------------------------
@@ -434,5 +439,19 @@ QuickContact::mouseDoubleClickEvent( QMouseEvent* pEvent)
 
     if ( pItem != nullptr  &&  rect.contains( pEvent->pos())) {
         ui->contacts->scrollToItem( pItem) ;
+    }
+}
+
+//----------------------------------------------------------
+void
+QuickContact::on_btnPrev_clicked()
+{
+    if ( m_found.isEmpty()) {
+        int nCurr = ui->contacts->currentRow() ;
+        ui->contacts->setCurrentRow( nCurr == 0 ? ui->contacts->count() - 1 : nCurr - 1) ;
+    }
+    else {
+        m_nCurr = ( m_nCurr == 0) ? m_found.count() - 1 : m_nCurr - 1 ;
+        ui->contacts->setCurrentItem( m_found.at( m_nCurr)) ;
     }
 }

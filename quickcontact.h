@@ -48,8 +48,9 @@ class QuickContact : public QDialog
         void on_btnNext_clicked();
         void on_QuickContact_accepted();
         void mouseDoubleClickEvent( QMouseEvent* pEvent) ;
+        void on_btnPrev_clicked();
 
-private:
+    private:
         bool              m_bMod ;
         int               m_nCurr ;
         QString           m_szKey ;
