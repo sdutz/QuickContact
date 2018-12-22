@@ -29,6 +29,7 @@ class QuickContact : public QDialog
         void setModified( bool bModified) ;
         void setTitle() ;
         void doEdit( int nRow) ;
+        void showAll() ;
 
     private slots:
         void keyPressEvent( QKeyEvent* pEvent) ;

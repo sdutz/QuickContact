@@ -42,6 +42,21 @@ QuickContact::on_contacts_clicked( const QModelIndex &index)
     ui->number->display( m_map.value( pItem->text())) ;
 }
 
+//--------------------------------d--------------------------
+void
+QuickContact::showAll()
+{
+    QListWidgetItem* pITem ;
+
+    for ( int i = 0 ;  i < ui->contacts->count() ;  i ++) {
+        pITem  = ui->contacts->item( i) ;
+        if ( pITem == nullptr) {
+            continue ;
+        }
+        ui->contacts->setItemHidden( pITem, false) ;
+    }
+}
+
 //----------------------------------------------------------
 void
 QuickContact::on_filter_textChanged( const QString &arg1)
@@ -49,6 +64,7 @@ QuickContact::on_filter_textChanged( const QString &arg1)
     if ( arg1.isEmpty()) {
         ui->btnNext->setEnabled( false) ;
         ui->btnReset->setEnabled( false) ;
+        showAll() ;
         return ;
     }
     else {
@@ -74,6 +90,15 @@ QuickContact::on_filter_textChanged( const QString &arg1)
     }
     else {
         ui->btnNext->setEnabled( false) ;
+    }
+
+    QListWidgetItem* pITem ;
+    for ( int i = 0 ;  i < ui->contacts->count() ;  i ++) {
+        pITem  = ui->contacts->item( i) ;
+        if ( pITem == nullptr) {
+            continue ;
+        }
+        ui->contacts->setItemHidden( pITem, ! m_found.contains( pITem)) ;
     }
 }
 
@@ -239,6 +264,7 @@ void QuickContact::on_btnReset_clicked()
     ui->filter->clear() ;
     ui->btnNext->setEnabled( false) ;
     ui->btnReset->setEnabled( false) ;
+    showAll() ;
 }
 
 //----------------------------------------------------------
@@ -272,6 +298,8 @@ QuickContact::showMap( bool bInit /*= false*/)
             }
         }
     }
+
+    ui->contacts->sortItems() ;
 }
 
 //----------------------------------------------------------
