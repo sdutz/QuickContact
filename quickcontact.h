@@ -30,6 +30,7 @@ class QuickContact : public QDialog
         void setTitle() ;
         void doEdit( int nRow) ;
         void showAll() ;
+        void enablePrevNext( void) ;
 
     private slots:
         void keyPressEvent( QKeyEvent* pEvent) ;

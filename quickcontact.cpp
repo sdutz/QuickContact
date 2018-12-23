@@ -24,6 +24,7 @@ QuickContact::QuickContact( QWidget *parent) : QDialog( parent), ui( new Ui::Qui
     ui->btnSave->setEnabled( false) ;
     ui->btnReset->setEnabled( false) ;
     ui->filter->setFocus() ;
+    enablePrevNext() ;
 }
 
 //----------------------------------------------------------
@@ -83,12 +84,9 @@ QuickContact::on_filter_textChanged( const QString &arg1)
     if ( ! m_found.isEmpty()) {
         m_nCurr = 0 ;
         ui->contacts->setCurrentItem( m_found.first()) ;
-        ui->btnNext->setEnabled( true) ;
-        ui->btnPrev->setEnabled( true) ;
     }
-    else {
-        ui->btnNext->setEnabled( false) ;
-    }
+
+    enablePrevNext() ;
 
     QListWidgetItem* pITem ;
     for ( int i = 0 ;  i < ui->contacts->count() ;  i ++) {
@@ -185,6 +183,7 @@ QuickContact::on_btnDelete_clicked()
 
     setTitle() ;
     setModified( true) ;
+    enablePrevNext() ;
 }
 
 //----------------------------------------------------------
@@ -263,6 +262,7 @@ void QuickContact::on_btnReset_clicked()
     ui->btnReset->setEnabled( false) ;
     m_found.clear() ;
     showAll() ;
+    enablePrevNext() ;
 }
 
 //----------------------------------------------------------
@@ -454,4 +454,15 @@ QuickContact::on_btnPrev_clicked()
         m_nCurr = ( m_nCurr == 0) ? m_found.count() - 1 : m_nCurr - 1 ;
         ui->contacts->setCurrentItem( m_found.at( m_nCurr)) ;
     }
+}
+
+//----------------------------------------------------------
+void
+QuickContact::enablePrevNext( void)
+{
+    bool bDisable = ui->contacts->count() == 0  ||
+                   ( ! ui->filter->text().isEmpty()  &&  m_found.isEmpty()) ;
+
+    ui->btnNext->setEnabled( ! bDisable) ;
+    ui->btnPrev->setEnabled( ! bDisable) ;
 }
