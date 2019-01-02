@@ -64,6 +64,9 @@
      <height>36</height>
     </size>
    </property>
+   <property name="flat">
+    <bool>true</bool>
+   </property>
   </widget>
   <widget class="QListWidget" name="contacts">
    <property name="geometry">
@@ -100,6 +103,9 @@
      <height>48</height>
     </size>
    </property>
+   <property name="flat">
+    <bool>true</bool>
+   </property>
   </widget>
   <widget class="QPushButton" name="btnEdit">
    <property name="geometry">
@@ -125,6 +131,9 @@
      <width>48</width>
      <height>48</height>
     </size>
+   </property>
+   <property name="flat">
+    <bool>true</bool>
    </property>
   </widget>
   <widget class="QPushButton" name="btnSave">
@@ -152,6 +161,9 @@
      <height>48</height>
     </size>
    </property>
+   <property name="flat">
+    <bool>true</bool>
+   </property>
   </widget>
   <widget class="QPushButton" name="btnAbout">
    <property name="geometry">
@@ -177,6 +189,9 @@
      <width>48</width>
      <height>48</height>
     </size>
+   </property>
+   <property name="flat">
+    <bool>true</bool>
    </property>
   </widget>
   <widget class="QLCDNumber" name="number">
@@ -214,11 +229,14 @@
      <height>48</height>
     </size>
    </property>
+   <property name="flat">
+    <bool>true</bool>
+   </property>
   </widget>
   <widget class="QPushButton" name="btnImp">
    <property name="geometry">
     <rect>
-     <x>470</x>
+     <x>480</x>
      <y>300</y>
      <width>77</width>
      <height>77</height>
@@ -239,6 +257,9 @@
      <width>48</width>
      <height>48</height>
     </size>
+   </property>
+   <property name="flat">
+    <bool>true</bool>
    </property>
   </widget>
   <widget class="QPushButton" name="btnNext">
@@ -266,6 +287,9 @@
      <height>36</height>
     </size>
    </property>
+   <property name="flat">
+    <bool>true</bool>
+   </property>
   </widget>
   <widget class="QPushButton" name="btnPrev">
    <property name="geometry">
@@ -291,6 +315,9 @@
      <width>36</width>
      <height>36</height>
     </size>
+   </property>
+   <property name="flat">
+    <bool>true</bool>
    </property>
   </widget>
  </widget>
