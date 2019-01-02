@@ -119,6 +119,7 @@ QuickContact::on_btnAdd_clicked()
 
     setTitle() ;
     setModified( true) ;
+    enablePrevNext() ;
 }
 
 //----------------------------------------------------------
