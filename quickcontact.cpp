@@ -262,6 +262,13 @@ void QuickContact::on_btnReset_clicked()
     ui->btnReset->setEnabled( false) ;
     m_found.clear() ;
     showAll() ;
+    m_found = ui->contacts->findItems( m_map.key( ui->number->intValue()), Qt::MatchFlag::MatchExactly) ;
+    if ( m_found.count() == 1) {
+        ui->contacts->setFocus() ;
+        ui->contacts->setCurrentRow( ui->contacts->row( m_found.first())) ;
+        ui->contacts->scrollToItem( m_found.first()) ;
+    }
+    m_found.clear() ;
     enablePrevNext() ;
 }
 
