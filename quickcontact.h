@@ -59,6 +59,8 @@ class QuickContact : public QDialog
         QString           m_szNumSep ;
         QString           m_szContSep ;
         QString           m_szLast ;
+        QString           m_szWidth ;
+        QString           m_szHeight ;
         QSettings         m_set ;
         QMap<QString,int> m_map ;
         QMap<QString, int>::iterator m_iter ;

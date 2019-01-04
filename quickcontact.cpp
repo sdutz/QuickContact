@@ -14,6 +14,8 @@ QuickContact::QuickContact( QWidget *parent) : QDialog( parent), ui( new Ui::Qui
     m_bMod  = false ;
     m_szKey = "contacts" ;
     m_szLast = "last" ;
+    m_szWidth = "width" ;
+    m_szHeight = "height" ;
     m_szNumSep  = ":" ;
     m_szContSep = "," ;
     m_szTitle   = "Contacts" ;
@@ -25,6 +27,8 @@ QuickContact::QuickContact( QWidget *parent) : QDialog( parent), ui( new Ui::Qui
     ui->btnReset->setEnabled( false) ;
     ui->filter->setFocus() ;
     enablePrevNext() ;
+    resize( m_set.value( m_szWidth, minimumWidth()).toInt(),
+            m_set.value( m_szHeight, minimumHeight()).toInt()) ;
 }
 
 //----------------------------------------------------------
@@ -430,6 +434,9 @@ QuickContact::on_QuickContact_accepted()
     if ( pItem != nullptr) {
         m_set.setValue( m_szLast, pItem->text()) ;
     }
+
+    m_set.setValue( m_szWidth, width()) ;
+    m_set.setValue( m_szHeight, height()) ;
 }
 
 //----------------------------------------------------------
