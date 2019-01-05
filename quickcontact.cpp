@@ -1,9 +1,9 @@
 #include "quickcontact.h"
 #include "ui_quickcontact.h"
 #include <QMessageBox>
-#include <QInputDialog>
 #include <QFileDialog>
 #include <QTextStream>
+#include "input.h"
 #include "about.h"
 
 //----------------------------------------------------------
@@ -106,20 +106,29 @@ QuickContact::on_filter_textChanged( const QString &arg1)
 void
 QuickContact::on_btnAdd_clicked()
 {
-    QString szContact = QInputDialog::getText( this, m_szTitle, tr( "Insert contact")) ;
-    if( szContact.isEmpty()) {
+    int     nNum ;
+    int     nShort ;
+    QString szContact ;
+    Input   in( this) ;
+
+    if ( in.exec() != QDialog::Accepted) {
         return ;
     }
 
-    int nNum = QInputDialog::getInt( this, m_szTitle, tr( "Insert number")) ;
-    if ( nNum == 0) {
+    in.GetData( &szContact, &nNum, &nShort) ;
+
+    if( szContact.isEmpty()  ||  nNum == 0) {
         return ;
     }
 
     m_mapN.insert( szContact, nNum) ;
+    if ( nShort > 0) {
+        m_mapS.insert( szContact, nShort) ;
+    }
 
     ui->contacts->addItem( szContact) ;
     ui->contacts->sortItems() ;
+    goTo( szContact) ;
     ui->number->display( nNum) ;
 
     setTitle() ;
@@ -145,28 +154,39 @@ QuickContact::doEdit( int nRow)
     }
 
     QString szOld = pCurr->text() ;
-    int nOld = m_mapN.value( szOld) ;
+    int nOldN = m_mapN.value( szOld) ;
+    int nOldS = m_mapS.value( szOld) ;
 
-    QString szNew = QInputDialog::getText( this, m_szTitle, tr( "Modify contact"),
-                                           QLineEdit::Normal, szOld) ;
-    if ( szNew.isEmpty()) {
+    int     nNewN ;
+    int     nNewS ;
+    QString szNew ;
+    Input in( szOld, nOldN, this, nOldS) ;
+
+    if ( in.exec() != QDialog::Accepted) {
         return ;
     }
 
-    int nNew = QInputDialog::getInt( this, m_szTitle, tr( "Modify number"), nOld) ;
-    if ( nNew == 0) {
+    in.GetData( &szNew, &nNewN, &nNewS) ;
+
+    if ( szNew.isEmpty()  ||  nNewN == 0) {
         return ;
     }
 
-    if ( szOld == szNew  &&  nOld == nNew) {
+    if ( szOld == szNew  &&  nOldN == nNewS  &&  nOldS  ==  nNewS) {
         return ;
     }
 
     pCurr->setText( szNew) ;
     m_mapN.remove( szOld) ;
-    m_mapN.insert( szNew, nNew) ;
+    m_mapN.insert( szNew, nNewN) ;
 
-    ui->number->display( nNew) ;
+    m_mapS.remove( szOld) ;
+    if ( nNewS > 0) {
+        m_mapS.insert( szNew, nNewS) ;
+        ui->number->setToolTip( QString::number(( nNewS))) ;
+    }
+
+    ui->number->display( nNewN) ;
 
     setModified( true) ;
 }
@@ -272,19 +292,27 @@ QuickContact::on_btnImp_clicked()
 }
 
 //----------------------------------------------------------
-void QuickContact::on_btnReset_clicked()
+void
+QuickContact::goTo( const QString& szContact)
 {
-    ui->filter->clear() ;
-    ui->btnReset->setEnabled( false) ;
-    m_found.clear() ;
-    showAll() ;
-    m_found = ui->contacts->findItems( m_mapN.key( ui->number->intValue()), Qt::MatchFlag::MatchExactly) ;
+    m_found = ui->contacts->findItems( szContact, Qt::MatchFlag::MatchExactly) ;
     if ( m_found.count() == 1) {
         ui->contacts->setFocus() ;
         ui->contacts->setCurrentRow( ui->contacts->row( m_found.first())) ;
         ui->contacts->scrollToItem( m_found.first()) ;
     }
     m_found.clear() ;
+}
+
+//----------------------------------------------------------
+void
+QuickContact::on_btnReset_clicked()
+{
+    ui->filter->clear() ;
+    ui->btnReset->setEnabled( false) ;
+    m_found.clear() ;
+    showAll() ;
+    goTo( m_mapN.key( ui->number->intValue())) ;
     enablePrevNext() ;
 }
 

@@ -31,6 +31,7 @@ class QuickContact : public QDialog
         void doEdit( int nRow) ;
         void showAll() ;
         void enablePrevNext( void) ;
+        void goTo( const QString& szContact) ;
 
     private slots:
         void keyPressEvent( QKeyEvent* pEvent) ;
