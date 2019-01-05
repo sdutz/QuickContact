@@ -119,6 +119,7 @@ QuickContact::on_btnAdd_clicked()
     m_map.insert( szContact, nNum) ;
 
     ui->contacts->addItem( szContact) ;
+    ui->contacts->sortItems() ;
     ui->number->display( nNum) ;
 
     setTitle() ;
