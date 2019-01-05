@@ -43,7 +43,7 @@ QuickContact::on_contacts_clicked( const QModelIndex &index)
 {
     QListWidgetItem* pItem = ui->contacts->item( index.row()) ;
 
-    ui->number->display( m_map.value( pItem->text())) ;
+    ui->number->display( m_mapN.value( pItem->text())) ;
 }
 
 //--------------------------------d--------------------------
@@ -76,7 +76,7 @@ QuickContact::on_filter_textChanged( const QString &arg1)
     bool bOk ;
     int num = arg1.toInt( &bOk) ;
     if ( bOk) {
-        QString res = m_map.key( num) ;
+        QString res = m_mapN.key( num) ;
         if ( ! res.isEmpty()) {
             m_found = ui->contacts->findItems( res, Qt::MatchExactly) ;
         }
@@ -116,7 +116,7 @@ QuickContact::on_btnAdd_clicked()
         return ;
     }
 
-    m_map.insert( szContact, nNum) ;
+    m_mapN.insert( szContact, nNum) ;
 
     ui->contacts->addItem( szContact) ;
     ui->contacts->sortItems() ;
@@ -145,7 +145,7 @@ QuickContact::doEdit( int nRow)
     }
 
     QString szOld = pCurr->text() ;
-    int nOld = m_map.value( szOld) ;
+    int nOld = m_mapN.value( szOld) ;
 
     QString szNew = QInputDialog::getText( this, m_szTitle, tr( "Modify contact"),
                                            QLineEdit::Normal, szOld) ;
@@ -163,8 +163,8 @@ QuickContact::doEdit( int nRow)
     }
 
     pCurr->setText( szNew) ;
-    m_map.remove( szOld) ;
-    m_map.insert( szNew, nNew) ;
+    m_mapN.remove( szOld) ;
+    m_mapN.insert( szNew, nNew) ;
 
     ui->number->display( nNew) ;
 
@@ -184,7 +184,10 @@ QuickContact::on_btnDelete_clicked()
 
     QString szCurr = pCurr->text() ;
 
-    m_map.remove( szCurr) ;
+    m_mapN.remove( szCurr) ;
+    if ( m_mapS.find( szCurr) != m_mapS.end()) {
+        m_mapS.remove( szCurr) ;
+    }
     ui->contacts->takeItem( nRow) ;
 
     setTitle() ;
@@ -198,8 +201,12 @@ QuickContact::on_btnSave_clicked()
 {
     QString szVal ;
 
-    for ( m_iter = m_map.begin() ;  m_iter != m_map.end() ;  ++ m_iter) {
-        szVal += m_iter.key() + m_szNumSep + QString::number( m_iter.value()) + m_szContSep ;
+    for ( m_iter = m_mapN.begin() ;  m_iter != m_mapN.end() ;  ++ m_iter) {
+        szVal += m_iter.key() + m_szNumSep + QString::number( m_iter.value()) ;
+        if ( m_mapS.find( m_iter.key()) != m_mapS.end()) {
+            szVal += m_szNumSep + QString::number( m_mapS.value( m_iter.key())) ;
+        }
+        szVal += m_szContSep ;
     }
 
     m_set.setValue( m_szKey, szVal) ;
@@ -242,19 +249,22 @@ QuickContact::on_btnImp_clicked()
 
     QStringList slTokens ;
     QTextStream stream( &file) ;
-    int nOldSize = m_map.count() ;
+    int nOldSize = m_mapN.count() ;
 
     while( ! stream.atEnd()) {
         slTokens = stream.readLine().split( m_szNumSep) ;
-        if ( slTokens.size() < 2) {
+        if ( slTokens.count() < 2) {
             continue ;
         }
-        m_map.insert( slTokens.first(), slTokens.last().toInt()) ;
+        m_mapN.insert( slTokens.at(0), slTokens.at(1).toInt()) ;
+        if ( slTokens.count() == 3) {
+            m_mapS.insert( slTokens.at(0), slTokens.at(2).toInt()) ;
+        }
     }
 
     file.close() ;
 
-    if ( m_map.count() != nOldSize) {
+    if ( m_mapN.count() != nOldSize) {
         showMap() ;
         setModified( true) ;
         setTitle() ;
@@ -268,7 +278,7 @@ void QuickContact::on_btnReset_clicked()
     ui->btnReset->setEnabled( false) ;
     m_found.clear() ;
     showAll() ;
-    m_found = ui->contacts->findItems( m_map.key( ui->number->intValue()), Qt::MatchFlag::MatchExactly) ;
+    m_found = ui->contacts->findItems( m_mapN.key( ui->number->intValue()), Qt::MatchFlag::MatchExactly) ;
     if ( m_found.count() == 1) {
         ui->contacts->setFocus() ;
         ui->contacts->setCurrentRow( ui->contacts->row( m_found.first())) ;
@@ -292,12 +302,12 @@ QuickContact::showMap( bool bInit /*= false*/)
         szCurr = m_set.value( m_szLast, "").toString() ;
     }
 
-    lszKeys = m_map.keys() ;
+    lszKeys = m_mapN.keys() ;
     for ( nIdx = 0 ;  nIdx < lszKeys.count() ;  nIdx ++) {
         ui->contacts->addItem( lszKeys.at( nIdx)) ;
     }
 
-    if ( m_map.count() > 0) {
+    if ( m_mapN.count() > 0) {
         if ( szCurr.isEmpty()) {
             ui->contacts->setCurrentRow( 0) ;
         }
@@ -323,7 +333,10 @@ QuickContact::loadMap()
     foreach( QString szContact, lszContacts) {
         if ( ! szContact.isEmpty()) {
             QStringList lszContact = szContact.split( m_szNumSep) ;
-            m_map.insert( lszContact.first(), lszContact.last().toInt()) ;
+            m_mapN.insert( lszContact.at(0), lszContact.at(1).toInt()) ;
+            if ( lszContact.count() == 3) {
+                m_mapS.insert( lszContact.at(0), lszContact.at(2).toInt()) ;
+            }
         }
     }
 }
@@ -379,7 +392,12 @@ QuickContact::on_contacts_currentRowChanged( int currentRow)
     QListWidgetItem* pItem = ui->contacts->item( currentRow) ;
 
     if ( pItem != nullptr) {
-        ui->number->display( m_map.value( pItem->text())) ;
+        ui->number->display( m_mapN.value( pItem->text())) ;
+        QString szTip ;
+        if ( m_mapS.find( pItem->text()) != m_mapS.end()) {
+            szTip = QString::number( m_mapS.value( pItem->text())) ;
+        }
+        ui->number->setToolTip( szTip) ;
     }
 }
 
@@ -395,7 +413,7 @@ QuickContact::setModified( bool bModified)
 void
 QuickContact::setTitle()
 {
-    setWindowTitle( m_szTitle + " : " + QString::number( m_map.count())) ;
+    setWindowTitle( m_szTitle + " : " + QString::number( m_mapN.count())) ;
 }
 
 //----------------------------------------------------------

@@ -62,7 +62,8 @@ class QuickContact : public QDialog
         QString           m_szWidth ;
         QString           m_szHeight ;
         QSettings         m_set ;
-        QMap<QString,int> m_map ;
+        QMap<QString,int> m_mapN ;
+        QMap<QString,int> m_mapS ;
         QMap<QString, int>::iterator m_iter ;
         QList<QListWidgetItem*> m_found ;
         Ui::QuickContact  *ui ;
