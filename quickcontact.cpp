@@ -111,13 +111,12 @@ QuickContact::on_btnAdd_clicked()
     QString szContact ;
     Input   in( this) ;
 
+    in.setWindowTitle( m_szTitle) ;
     if ( in.exec() != QDialog::Accepted) {
         return ;
     }
 
-    in.GetData( &szContact, &nNum, &nShort) ;
-
-    if( szContact.isEmpty()  ||  nNum == 0) {
+    if ( ! in.GetData( &szContact, &nNum, &nShort)  ||  szContact.isEmpty()) {
         return ;
     }
 
@@ -161,14 +160,12 @@ QuickContact::doEdit( int nRow)
     int     nNewS ;
     QString szNew ;
     Input in( szOld, nOldN, this, nOldS) ;
-
+    in.setWindowTitle( m_szTitle) ;
     if ( in.exec() != QDialog::Accepted) {
         return ;
     }
 
-    in.GetData( &szNew, &nNewN, &nNewS) ;
-
-    if ( szNew.isEmpty()  ||  nNewN == 0) {
+    if ( ! in.GetData( &szNew, &nNewN, &nNewS)  ||  szNew.isEmpty()) {
         return ;
     }
 
