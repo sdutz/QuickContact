@@ -120,6 +120,11 @@ QuickContact::on_btnAdd_clicked()
         return ;
     }
 
+    if ( m_mapN.find( szContact) != m_mapN.end()) {
+        QMessageBox::warning( this, m_szTitle, "Contact already in list") ;
+        return ;
+    }
+
     m_mapN.insert( szContact, nNum) ;
     if ( nShort > 0) {
         m_mapS.insert( szContact, nShort) ;
