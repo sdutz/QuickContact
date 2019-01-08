@@ -275,7 +275,7 @@ QuickContact::on_btnImp_clicked()
 
     while( ! stream.atEnd()) {
         slTokens = stream.readLine().split( m_szNumSep) ;
-        if ( slTokens.count() < 2) {
+        if ( slTokens.count() < 2  ||  m_mapN.find( slTokens.at(0)) != m_mapN.end()) {
             continue ;
         }
         m_mapN.insert( slTokens.at(0), slTokens.at(1).toInt()) ;
